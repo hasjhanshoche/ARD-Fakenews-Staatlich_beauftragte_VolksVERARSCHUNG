@@ -1,0 +1,323 @@
+
+
+$(document).ready(function() {
+    "use strict"; // Start of use strict
+
+$('#cookie-settings').click(function(e){
+	e.preventDefault();
+	$('#cookie').removeClass("hidden");
+	$('#cookie').show();
+});
+
+//-------------------------------------------------------------------------------------------------------------------
+// jQuery for page scrolling feature - requires jQuery Easing plugin
+//-------------------------------------------------------------------------------------------------------------------
+    $('a.page-scroll, .nav-link').bind('click', function(event) {
+        var $anchor = $(this);
+		var $anchor =  '#'+$anchor.attr('href').split('#')[1]; // fix hash LS 12032019
+        $('html, body').stop().animate({
+            scrollTop: ($($anchor).offset().top - 0)
+        }, 1250, 'easeInOutExpo');
+        event.preventDefault();
+    });
+//-------------------------------------------------------------------------------------------------------------------
+//BACK TO TOP
+//-------------------------------------------------------------------------------------------------------------------
+//Check to see if the window is top if not then display button
+	if($(window).width() > 992){
+	
+	//BACK TOP TOP
+		$(window).scroll(function(){
+			if ($(this).scrollTop() > 300) {
+				$('#backtotop').fadeIn();
+			} else {
+				$('#backtotop').fadeOut();
+			}
+		});
+		//Click event to scroll to top
+    $('#backtotop').click(function(){
+        $('html, body').animate({scrollTop : 0},800);
+        return false;
+    });
+	
+	}
+//-------------------------------------------------------------------------------------------------------------------
+//DATA-IMAGE-SRC
+//-------------------------------------------------------------------------------------------------------------------
+	$( "#page-document header, #page-explore header, #page-report header" ).each(function() {
+	  var attr = $(this).attr('data-background');
+	
+	  if (typeof attr !== typeof undefined && attr !== false) {
+		  $(this).css('background-image', 'url('+attr+')');
+		  
+	  }
+	
+	});
+//-------------------------------------------------------------------------------------------------------------------
+//PARALLAX HEADER
+//-------------------------------------------------------------------------------------------------------------------
+	/**
+ * Author: Heather Corey
+ * jQuery Simple Parallax Plugin
+ *
+ */
+(function($) {
+    $.fn.parallax = function(options) {
+        var windowHeight = $(window).height();
+
+        // Establish default settings
+        var settings = $.extend({
+            speed        : 0.15
+        }, options);
+
+        // Iterate over each object in collection
+        return this.each( function() {
+
+        // Save a reference to the element
+        var $this = $(this);
+
+        // Set up Scroll Handler
+        $(document).scroll(function(){
+
+    var scrollTop = $(window).scrollTop();
+            var offset = $this.offset().top;
+            var height = $this.outerHeight();
+
+    // Check if above or below viewport
+if (offset + height <= scrollTop || offset >= scrollTop + windowHeight) {
+return;
+}
+
+var yBgPosition = Math.round((offset - scrollTop) * settings.speed);
+
+
+                // Apply the Y Background Position to Set the Parallax Effect
+    $this.css('background-position', 'center ' + yBgPosition + 'px');
+                
+        });
+        });
+    };
+}(jQuery));
+	
+$('#page-document header, #page-explore header, #page-report header').parallax({
+speed : 0.15
+});
+
+//-------------------------------------------------------------------------------------------------------------------
+//MOBILE NAV
+//-------------------------------------------------------------------------------------------------------------------
+	
+	$('.navbar-brand.mobile').on('click', function(e) {
+		e.preventDefault();
+		$('#main-nav').toggleClass('show');
+	});
+	
+//-------------------------------------------------------------------------------------------------------------------
+//SIMPLE ACCORDION https://codepen.io/anon/pen/gzWNWO
+//-------------------------------------------------------------------------------------------------------------------	
+	
+ $('.accordion-item .heading').on('click', function(e) {
+    e.preventDefault();
+
+    // Add the correct active class
+    if($(this).closest('.accordion-item').hasClass('active')) {
+        // Remove active classes
+        $('.accordion-item').removeClass('active');
+    } else {
+        // Remove active classes
+        $('.accordion-item').removeClass('active');
+
+        // Add the active class
+        $(this).closest('.accordion-item').addClass('active');
+    }
+
+    // Show the content
+    var $content = $(this).next();
+    $content.slideToggle(100);
+    $('.accordion-item .content').not($content).slideUp('fast');
+});
+	
+//-------------------------------------------------------------------------------------------------------------------
+//Lightgallery
+//-------------------------------------------------------------------------------------------------------------------
+	 $(".lightgallery").lightGallery({
+   	selector: '.item',
+		thumbnail:true,
+		showThumbByDefault: false,
+		download: false,
+		fullScreen: false,
+		autoplay: false,
+		autoplayControls: false,
+		pager: false,
+		zoom: false,
+		share: false,
+		counter:false,
+		videoMaxWidth: '1680px',
+		 
+		youtubePlayerParams: {
+    	modestbranding: 1,
+      showinfo: 0,
+      rel: 0,
+      controls: 0
+    },
+    vimeoPlayerParams: {
+      byline : 0,
+      portrait : 0,
+      color : 'A90707'     
+    }
+		 
+	 });
+	
+//--------------------
+// PROJEKTE 
+//--------------------
+
+	$('#mobile-projects a').click(function(){
+		var ref = $(this).attr('data-href');
+		$('#pin_'+ref).trigger('click');
+	});
+
+  var gallery_top_swiper;
+  var gallery_thumbs_swiper;
+
+  $("#project-overview").addClass("hidden");
+ 	$(".hotspot, .close").click(function(){
+	  var source = $(this).attr('class');
+	  console.log('class:'+source);
+	  if(source=="hotspot"){
+			$('#project-nav').empty();
+			$('#project-top').empty();
+			
+			console.log('gallery:'+gallery);
+			var gallery = $(this).attr('data-href').replace("gallery_", "");
+			var pintype = $(this).attr('data-pin-type');
+			console.log('test:'+$(this).attr('data-href'));
+			$.ajax({
+				url: '/projectgallery/'+gallery,
+				type: 'GET',
+				data:{
+					'pintype' : pintype,
+				},
+				dataType: 'json',
+				error: function() {
+
+				},
+				success: function(data) {
+					$('#detail-footer').removeClass('doku');$('#detail-footer').removeClass('dive');
+					if(pintype=='docu'){
+						$('#detail-footer').html(' <i class="icon"><img id="pin-image" src="/images/icon-fotograf.svg" alt="" /></i><h3><span class="subline">'+data.subtitle+'</span> '+data.title+'</h3>'+data.content);
+						$('#detail-footer').addClass('doku');
+					} else if(pintype=='dive'){
+						$('#detail-footer').html(' <i class="icon"><img id="pin-image" src="/images/icon-taucher.svg" alt="" /></i><h3><span class="subline">'+data.subtitle+'</span> '+data.title+'</h3>'+data.content);
+						$('#detail-footer').addClass('dive');
+					}	
+					$('#project-nav').empty(); $('#project-top').empty();
+					for (var image in data.images) {
+					  $('#project-nav').append('<div class="swiper-slide"><img src="'+data.images[image]+'" alt=""></div>');
+					  $('#project-top').append('<div class="swiper-slide"><img src="'+data.images[image]+'" alt=""></div>');
+					}
+					$("#project-overview").removeClass('hidden');
+								
+					
+					
+						console.log("gallery thumbs swiper loop");
+						if(gallery_thumbs_swiper){
+							gallery_thumbs_swiper.destroy(); 
+						}	
+						if(gallery_top_swiper){
+							gallery_top_swiper.destroy(); 
+						}
+						gallery_thumbs_swiper = new Swiper('.gallery-thumbs', {
+							spaceBetween: 10,
+							centeredSlides: false,
+							slidesPerView: '4',
+							touchRatio: 0.2,
+							loop: true,
+							loopedSlides: 5,
+							slideToClickedSlide: true,
+							autoplay: {
+								delay: 3000,
+								disableOnInteraction: false,
+							},
+						});
+						
+					
+						console.log("gallery top swiper loop");
+						gallery_top_swiper = new Swiper('.gallery-top', {
+							spaceBetween: 10,
+							loop: true,
+							loopedSlides: 5,
+						});
+						gallery_top_swiper.controller.control = gallery_thumbs_swiper;
+    				gallery_thumbs_swiper.controller.control = gallery_top_swiper;
+					
+					
+				}
+
+			});
+
+			
+	  } else {
+		$("#project-overview").addClass('hidden');
+	  }  
+  });
+  
+  if($(window).width() < 992){
+		$(".hotspot:first").trigger('click');
+  };
+
+
+//-------------------------------------------------------------------------------------------------------------------
+//Swiper
+//-------------------------------------------------------------------------------------------------------------------
+	
+	var swiper = new Swiper('.start-swiper', {
+			preloadImages: false,
+			//lazy: true,
+			lazy: {
+				loadPrevNext: true,
+			},
+			speed: 3000,
+			effect: 'fade',
+			fadeEffect: {
+				crossFade: true
+			},
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
+      
+    });
+	
+	var swiper = new Swiper('.range-swiper', {
+			speed: 3000,
+				effect: 'fade',
+				fadeEffect: {
+					crossFade: true
+				},
+			autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
+			pagination: {
+        el: '.swiper-pagination',
+        type: 'fraction',
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+	
+	
+	
+
+
+	
+	
+		
+
+
+}); // End of use strict
+
+ 

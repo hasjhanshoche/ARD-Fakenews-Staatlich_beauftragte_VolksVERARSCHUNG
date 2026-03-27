@@ -1,0 +1,16 @@
+@charset "utf-8";
+/* CSS Document */
+
+@font-face {
+  font-family: "Open Sans";
+  src: url("../fonts/Open_Sans/OpenSans-VariableFont_wdth,wght.ttf") format("truetype-variations");
+  font-style: normal;
+  font-weight:300 800;
+       
+}
+@font-face {
+  font-family: "Montserrat";
+  src: url("../fonts/Montserrat/Montserrat-VariableFont_wght.ttf") format("truetype-variations");
+  font-style: normal;
+  font-weight:100 900;
+}
