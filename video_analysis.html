@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Forensische Videoanalyse - Robert Marc Lehmann</title>
+    <style>
+        body { font-family: monospace; background: #000; color: #0f0; padding: 20px; }
+        video { width: 80%; border: 2px solid #0f0; }
+        #analysis { margin-top: 20px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>FORENSISCHE VIDEOANALYSE</h1>
+    <p>Datei: TV-20260326-1240-1300_Robert_Marc_Lehmann_1080.mp4</p>
+    <video id="video" controls>
+        <source src="TV-20260326-1240-1300_Robert_Marc_Lehmann_1080.mp4" type="video/mp4">
+    </video>
+    <div id="analysis"></div>
+    <script>
+        const v = document.getElementById('video');
+        const a = document.getElementById('analysis');
+        v.ontimeupdate = () => {
+            a.textContent = `Zeit: ${v.currentTime.toFixed(2)}s / ${v.duration.toFixed(2)}s\n` +
+                           `Auflösung: ${v.videoWidth}x${v.videoHeight}\n` +
+                           `Wiedergabe: ${(v.currentTime/v.duration*100).toFixed(1)}%`;
+        };
+    </script>
+</body>
+</html>
